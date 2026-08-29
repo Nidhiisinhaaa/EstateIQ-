@@ -12,3 +12,12 @@ ml_pipeline/data/raw/*.csv
 *.log
 .DS_Store
 .pytest_cache/
+
+.vscode/
+.claude/
+tests/
+conftest.py
+pytest.ini
+ml_pipeline/notebooks/
+ml_pipeline/data/
+ml_pipeline/steps/
