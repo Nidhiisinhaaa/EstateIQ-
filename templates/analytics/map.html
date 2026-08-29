@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Map Intelligence — {{ SITE_NAME }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<style>
+  #estateiq-map { height: calc(100vh - 4rem); width: 100%; background: var(--bp-base); }
+  .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--bp-surface); color: var(--bp-text); }
+  .bp-side-panel { transform: translateX(100%); transition: transform 200ms ease; }
+  .bp-side-panel.open { transform: translateX(0); }
+  .bp-range::-webkit-slider-thumb { accent-color: var(--bp-accent); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="relative">
+  <div id="estateiq-map" class="bp-grid-bg"></div>
+
+  <div class="absolute top-4 left-4 z-[1000] bp-card bp-tick p-4 max-w-xs">
+    <p class="bp-label mb-2">Map Intelligence</p>
+    <p class="text-xs text-bp-muted mb-3">Marker size = listing volume. Colour = price intensity.</p>
+
+    <p class="bp-label mb-2 mt-4">Tier</p>
+    <div class="flex flex-wrap gap-1.5" id="tier-filter">
+      <button data-tier="All" class="tier-btn bp-btn-ghost !px-2.5 !py-1 text-xs">All</button>
+      <button data-tier="Premium" class="tier-btn bp-btn-ghost !px-2.5 !py-1 text-xs">Premium</button>
+      <button data-tier="Mid" class="tier-btn bp-btn-ghost !px-2.5 !py-1 text-xs">Mid</button>
+      <button data-tier="Budget" class="tier-btn bp-btn-ghost !px-2.5 !py-1 text-xs">Budget</button>
+    </div>
+
+    <p class="bp-label mb-2 mt-4">Price / Sqft Range</p>
+    <div class="text-xs font-mono text-bp-muted mb-1 flex justify-between">
+      <span id="ppsf-min-label">-</span>
+      <span id="ppsf-max-label">-</span>
+    </div>
+    <input type="range" id="ppsf-min" class="bp-range w-full mb-1" />
+    <input type="range" id="ppsf-max" class="bp-range w-full" />
+  </div>
+
+  <div class="absolute bottom-4 left-4 z-[1000] bp-card bp-tick p-4 max-w-xs">
+    <p class="bp-label mb-2">Legend</p>
+    <div class="space-y-1.5 text-xs text-bp-muted">
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full" style="background:#B8860B"></span> Lower price intensity</div>
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full" style="background:#FACC15"></span> Higher price intensity</div>
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full" style="background:#34D399"></span> Top decile price/sqft</div>
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full border-2" style="border-color:#A3A3A3"></span> Approximate location (city centroid)</div>
+    </div>
+  </div>
+
+  <div id="side-panel" class="bp-side-panel fixed top-16 right-0 bottom-0 w-full sm:w-96 bg-bp-surface border-l border-bp-line z-[1100] p-6 overflow-y-auto">
+    <button id="side-panel-close" class="bp-btn-ghost !px-2 !py-1 text-xs mb-4">Close</button>
+    <div id="side-panel-content"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+  window.ESTATEIQ_PREDICT_URL = "{% url 'predictor:predict' %}";
+</script>
+<script src="{% static 'js/map.js' %}"></script>
+{% endblock %}

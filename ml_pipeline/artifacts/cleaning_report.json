@@ -1,0 +1,90 @@
+{
+  "seed": 42,
+  "steps": [
+    {
+      "step": "drop rows missing critical fields",
+      "rows_before": 10000,
+      "rows_after": 9566,
+      "rows_dropped": 434,
+      "note": "critical=['location', 'size', 'total_sqft', 'price']"
+    },
+    {
+      "step": "parse size -> bhk",
+      "rows_before": 9566,
+      "rows_after": 9566,
+      "rows_dropped": 0,
+      "note": "dropped rows with unparseable size"
+    },
+    {
+      "step": "normalise total_sqft (ranges/units)",
+      "rows_before": 9566,
+      "rows_after": 9312,
+      "rows_dropped": 254,
+      "note": "dropped unparseable/zero sqft"
+    },
+    {
+      "step": "drop total_sqft/bhk < 300",
+      "rows_before": 9312,
+      "rows_after": 9149,
+      "rows_dropped": 163,
+      "note": ""
+    },
+    {
+      "step": "per-location price_per_sqft within mean +/- 1 std",
+      "rows_before": 9149,
+      "rows_after": 7757,
+      "rows_dropped": 1392,
+      "note": ""
+    },
+    {
+      "step": "drop bhk flat cheaper than mean of (bhk-1) in same location",
+      "rows_before": 7757,
+      "rows_after": 7579,
+      "rows_dropped": 178,
+      "note": ""
+    },
+    {
+      "step": "drop bath > bhk + 2",
+      "rows_before": 7579,
+      "rows_after": 7500,
+      "rows_dropped": 79,
+      "note": ""
+    }
+  ],
+  "dropped_columns": [
+    "society"
+  ],
+  "unit_conversions": {
+    "Sq. Meter": 10.7639,
+    "Sq. Yards": 9.0,
+    "Perch": 272.25,
+    "Acre": 43560.0,
+    "Guntha": 1089.0,
+    "Cents": 435.6,
+    "Grounds": 2400.35
+  },
+  "initial_shape": [
+    10000,
+    9
+  ],
+  "rare_locations_bucketed": 20,
+  "rare_location_rows": 124,
+  "final_shape": [
+    7500,
+    11
+  ],
+  "total_rows_dropped": 2500,
+  "final_columns": [
+    "area_type",
+    "availability",
+    "location",
+    "size",
+    "total_sqft",
+    "bath",
+    "balcony",
+    "price",
+    "bhk",
+    "price_inr",
+    "price_per_sqft"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "best_model_name": "XGBoost",
+  "trained_at": "2026-08-16T17:11:04.593062+00:00",
+  "feature_count": 150,
+  "training_row_count": 6000,
+  "rmse": 1210221.14,
+  "r2": 0.9561,
+  "residual_std": 1209700.77
+}

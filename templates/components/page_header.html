@@ -1,0 +1,10 @@
+{% comment %}
+Usage: {% include "components/page_header.html" with eyebrow="Analytics" title="Price Intelligence Dashboard" description="..." %}
+{% endcomment %}
+<div class="max-w-7xl mx-auto px-6 pt-12 pb-8">
+  <p class="bp-label mb-3">{{ eyebrow }}</p>
+  <h1 class="font-heading text-3xl md:text-4xl font-semibold text-bp-text">{{ title }}</h1>
+  {% if description %}
+    <p class="mt-3 text-bp-muted max-w-2xl">{{ description }}</p>
+  {% endif %}
+</div>

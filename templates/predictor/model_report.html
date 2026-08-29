@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Model Report — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+{% include "components/page_header.html" with eyebrow="Model Transparency" title="Model Report" description="Every number on this page is read live from the trained artifacts and the database -- nothing here is hardcoded." %}
+
+<div class="max-w-7xl mx-auto px-6 pb-24 space-y-12">
+
+  <div class="flex flex-wrap gap-3">
+    <a href="{% url 'predictor:export_csv' %}" class="bp-btn-ghost">Export Comparison CSV</a>
+    {% if request.user.is_staff %}
+      <a href="{% url 'predictor:retrain' %}" class="bp-btn-ghost">Retrain Control</a>
+    {% endif %}
+  </div>
+
+  <section>
+    <p class="bp-label mb-4">Model Comparison</p>
+    <div class="bp-card p-0 overflow-x-auto">
+      <table class="bp-table" id="model-comparison-table">
+        <thead>
+          <tr>
+            <th data-sort="model_name" class="cursor-pointer">Model</th>
+            <th data-sort="mae" class="cursor-pointer">MAE</th>
+            <th data-sort="rmse" class="cursor-pointer">RMSE</th>
+            <th data-sort="r2" class="cursor-pointer">R2</th>
+            <th data-sort="mape" class="cursor-pointer">MAPE %</th>
+            <th data-sort="cv_r2_mean" class="cursor-pointer">CV R2 (mean +/- std)</th>
+            <th data-sort="train_seconds" class="cursor-pointer">Train (s)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in metrics %}
+            <tr class="{% if m.is_best %}border-l-2 border-bp-accent{% endif %}"
+                data-model_name="{{ m.model_name }}" data-mae="{{ m.mae }}" data-rmse="{{ m.rmse }}"
+                data-r2="{{ m.r2 }}" data-mape="{{ m.mape }}" data-cv_r2_mean="{{ m.cv_r2_mean }}"
+                data-train_seconds="{{ m.train_seconds }}">
+              <td>{{ m.model_name }}</td>
+              <td class="bp-metric">{{ m.mae|floatformat:0 }}</td>
+              <td class="bp-metric">{{ m.rmse|floatformat:0 }}</td>
+              <td class="bp-metric">{{ m.r2|floatformat:4 }}</td>
+              <td class="bp-metric">{{ m.mape|floatformat:2 }}</td>
+              <td class="bp-metric">{{ m.cv_r2_mean|floatformat:4 }} +/- {{ m.cv_r2_std|floatformat:4 }}</td>
+              <td class="bp-metric">{{ m.train_seconds|floatformat:2 }}</td>
+              <td>
+                {% if m.is_best %}
+                  <span class="bp-label text-bp-accent">Deployed</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="8" class="text-bp-muted text-sm">No model metrics yet -- run the ML pipeline and sync_model_metrics.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <p class="bp-label mb-4">Pipeline Overview</p>
+    <div class="bp-card p-6">
+      {% include "components/pipeline_diagram.html" %}
+    </div>
+  </section>
+
+  <section>
+    <p class="bp-label mb-4">Evaluation Artifacts</p>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bp-card p-5">
+        <img src="{% static 'ml-artifacts/model_comparison.png' %}" alt="Model comparison" class="w-full rounded-none border border-bp-line" />
+        <p class="text-xs text-bp-muted mt-3">Grouped MAE, RMSE and R2 across all five trained models -- the basis for the ranking table above.</p>
+      </div>
+      <div class="bp-card p-5">
+        <img src="{% static 'ml-artifacts/feature_importance.png' %}" alt="Feature importance" class="w-full rounded-none border border-bp-line" />
+        <p class="text-xs text-bp-muted mt-3">Top 20 features by importance in the deployed model -- shows which inputs move the price estimate most.</p>
+      </div>
+      <div class="bp-card p-5">
+        <img src="{% static 'ml-artifacts/actual_vs_predicted.png' %}" alt="Actual vs predicted" class="w-full rounded-none border border-bp-line" />
+        <p class="text-xs text-bp-muted mt-3">Held-out test set: predicted price vs actual price. Points closer to the diagonal indicate better fit.</p>
+      </div>
+      <div class="bp-card p-5">
+        <img src="{% static 'ml-artifacts/residuals.png' %}" alt="Residual distribution" class="w-full rounded-none border border-bp-line" />
+        <p class="text-xs text-bp-muted mt-3">Distribution of prediction errors (actual - predicted). A roughly symmetric, zero-centred spread indicates no systematic bias.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="bp-label mb-4">Methodology -- Cleaning Rules</p>
+    <div class="space-y-3">
+      {% for step in methodology_steps %}
+        <div class="bp-card p-4">
+          <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+            <p class="font-medium text-bp-text">{{ step.step }}</p>
+            <p class="bp-metric text-xs text-bp-muted">{{ step.rows_before }} &rarr; {{ step.rows_after }} rows ({{ step.rows_dropped }} dropped)</p>
+          </div>
+          <p class="text-sm text-bp-muted">{{ step.rationale }}</p>
+        </div>
+      {% endfor %}
+      {% if cleaning_report.dropped_columns %}
+        <div class="bp-card p-4">
+          <p class="font-medium text-bp-text mb-2">Dropped sparse columns</p>
+          <p class="text-sm text-bp-muted">{{ cleaning_report.dropped_columns|join:", " }} -- removed for having excessive nulls before any other cleaning step ran.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section>
+    <p class="bp-label mb-4">Methodology -- Engineered Features</p>
+    <div class="space-y-3">
+      {% for feature in engineered_features %}
+        <div class="bp-card p-4">
+          <p class="font-medium text-bp-text mb-2 bp-metric">{{ feature.name }}</p>
+          <p class="text-sm text-bp-muted">{{ feature.rationale }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/model_report.js' %}"></script>
+{% endblock %}

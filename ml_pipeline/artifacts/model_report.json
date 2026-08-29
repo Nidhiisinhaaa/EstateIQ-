@@ -1,0 +1,74 @@
+[
+  {
+    "name": "XGBoost",
+    "params": {
+      "learning_rate": 0.1,
+      "n_estimators": 150
+    },
+    "mae": 842639.95,
+    "rmse": 1210221.14,
+    "r2": 0.9561,
+    "mape": 9.02,
+    "cv_r2_mean": 0.9505,
+    "cv_r2_std": 0.0017,
+    "train_seconds": 3.258,
+    "is_best": true
+  },
+  {
+    "name": "Gradient Boosting",
+    "params": {
+      "learning_rate": 0.1,
+      "n_estimators": 150
+    },
+    "mae": 877172.48,
+    "rmse": 1218691.24,
+    "r2": 0.9555,
+    "mape": 9.7,
+    "cv_r2_mean": 0.9484,
+    "cv_r2_std": 0.0017,
+    "train_seconds": 7.644,
+    "is_best": false
+  },
+  {
+    "name": "Random Forest",
+    "params": {
+      "max_depth": 15,
+      "n_estimators": 150
+    },
+    "mae": 923049.55,
+    "rmse": 1338612.57,
+    "r2": 0.9463,
+    "mape": 9.8,
+    "cv_r2_mean": 0.9395,
+    "cv_r2_std": 0.0032,
+    "train_seconds": 9.098,
+    "is_best": false
+  },
+  {
+    "name": "Decision Tree",
+    "params": {
+      "max_depth": 10,
+      "min_samples_leaf": 5
+    },
+    "mae": 1014082.84,
+    "rmse": 1536882.52,
+    "r2": 0.9292,
+    "mape": 10.52,
+    "cv_r2_mean": 0.9278,
+    "cv_r2_std": 0.0055,
+    "train_seconds": 2.365,
+    "is_best": false
+  },
+  {
+    "name": "Linear Regression",
+    "params": {},
+    "mae": 1291139.31,
+    "rmse": 1834434.26,
+    "r2": 0.8992,
+    "mape": 17.04,
+    "cv_r2_mean": 0.8912,
+    "cv_r2_std": 0.006,
+    "train_seconds": 0.044,
+    "is_best": false
+  }
+]

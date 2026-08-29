@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static currency_tags %}
+
+{% block title %}Compare Predictions — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+{% include "components/page_header.html" with eyebrow="Account" title="Compare Predictions" description="Side-by-side view of your selected predictions." %}
+
+<div class="max-w-7xl mx-auto px-6 pb-24 space-y-8">
+
+  {% if not logs %}
+    <p class="text-sm text-bp-muted">No predictions selected. Go back to your <a href="{% url 'account:history' %}" class="text-bp-accent">history</a> and tick up to 4 rows.</p>
+  {% else %}
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {% for log in logs %}
+        <div class="bp-card bp-tick p-5">
+          <p class="bp-label mb-2">{{ log.location_name }}</p>
+          <p class="bp-metric text-2xl font-semibold mb-3">{{ log.predicted_price|inr_short }}</p>
+          <dl class="text-xs space-y-1.5 text-bp-muted">
+            <div class="flex justify-between"><dt>Configuration</dt><dd class="bp-metric text-bp-text">{{ log.bhk }} BHK, {{ log.area_sqft|floatformat:0 }} sqft</dd></div>
+            <div class="flex justify-between"><dt>Range</dt><dd class="bp-metric text-bp-text">{{ log.lower_bound|inr_short }} - {{ log.upper_bound|inr_short }}</dd></div>
+            <div class="flex justify-between"><dt>Confidence</dt><dd class="bp-metric text-bp-text">{{ log.confidence_score }}</dd></div>
+            <div class="flex justify-between"><dt>Model</dt><dd class="bp-metric text-bp-text">{{ log.model_name }}</dd></div>
+            <div class="flex justify-between"><dt>Date</dt><dd class="bp-metric text-bp-text">{{ log.created_at|date:"Y-m-d" }}</dd></div>
+          </dl>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="bp-card p-5">
+      <p class="bp-label mb-4">Predicted Price Comparison</p>
+      <div class="relative h-72">
+        <canvas id="compare-chart"></canvas>
+      </div>
+    </div>
+
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="{% static 'js/charts.js' %}"></script>
+<script>
+  const compareLabels = [{% for log in logs %}"{{ log.location_name|escapejs }} ({{ log.bhk }} BHK)"{% if not forloop.last %},{% endif %}{% endfor %}];
+  const comparePrices = [{% for log in logs %}{{ log.predicted_price }}{% if not forloop.last %},{% endif %}{% endfor %}];
+
+  if (window.Chart && compareLabels.length) {
+    new Chart(document.getElementById("compare-chart").getContext("2d"), {
+      type: "bar",
+      data: {
+        labels: compareLabels,
+        datasets: [{ label: "Predicted Price", data: comparePrices, backgroundColor: BP_COLORS.accent }],
+      },
+      options: {
+        scales: {
+          x: { ticks: { color: BP_COLORS.muted }, grid: { color: BP_COLORS.line } },
+          y: { ticks: { color: BP_COLORS.muted }, grid: { color: BP_COLORS.line } },
+        },
+        plugins: { legend: { display: false }, tooltip: BP_CURRENCY_TOOLTIP },
+      },
+    });
+  }
+</script>
+{% endblock %}

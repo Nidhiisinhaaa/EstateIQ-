@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Too Many Requests — EstateIQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bp-base: #111111; --bp-surface: #1C1C1C; --bp-line: #333333;
+    --bp-accent: #D4AF37; --bp-down: #F87171; --bp-text: #F5F5F5; --bp-muted: #A3A3A3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background-color: var(--bp-base);
+    background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212,175,55,0.12), transparent 60%);
+    background-repeat: no-repeat;
+    color: var(--bp-text);
+    font-family: 'Inter', sans-serif;
+  }
+  .card { text-align: center; padding: 2.5rem; border: 1px solid var(--bp-line); background: var(--bp-surface); max-width: 28rem; }
+  .code { font-family: 'JetBrains Mono', monospace; color: var(--bp-down); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  h1 { font-family: 'Space Grotesk', sans-serif; font-size: 1.75rem; margin: 0 0 0.75rem; }
+  p { color: var(--bp-muted); margin: 0 0 1.5rem; }
+  a { display: inline-block; padding: 0.65rem 1.25rem; background: var(--bp-accent); color: var(--bp-base); text-decoration: none; font-weight: 600; font-size: 0.875rem; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <p class="code">429 -- Too Many Requests</p>
+    <h1>You've hit the prediction rate limit.</h1>
+    <p>To keep the service fair for everyone, predictions are limited per hour. Please try again shortly.</p>
+    <a href="/">Back to Home</a>
+  </div>
+</body>
+</html>

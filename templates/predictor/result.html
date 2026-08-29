@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static currency_tags %}
+
+{% block title %}Prediction Result — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+{% include "components/page_header.html" with eyebrow="Prediction Result" title=log.location_name description="Estimate generated from the deployed regression model." %}
+
+<div class="max-w-7xl mx-auto px-6 pb-24 space-y-8">
+
+  <div class="bp-card bp-tick p-8 md:p-10">
+    <p class="bp-label mb-3">Estimated Price</p>
+    <p class="bp-metric text-5xl md:text-6xl font-semibold text-bp-text">{{ log.predicted_price|inr_short }}</p>
+    <p class="text-bp-muted mt-2">{{ log.predicted_price|inr }}</p>
+
+    <div class="mt-10">
+      <div class="relative h-2 bg-bp-surface2 border border-bp-line rounded-none">
+        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-bp-down" style="left: 0%;"></div>
+        <div class="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-bp-accent border-2 border-bp-base" style="left: 50%;"></div>
+        <div class="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-bp-up" style="left: 100%; transform: translate(-100%, -50%);"></div>
+      </div>
+      <div class="flex justify-between mt-3 text-xs font-mono text-bp-muted">
+        <span>{{ log.lower_bound|inr_short }}</span>
+        <span class="text-bp-accent">{{ log.predicted_price|inr_short }}</span>
+        <span>{{ log.upper_bound|inr_short }}</span>
+      </div>
+      <p class="bp-label mt-2">95% Confidence Range</p>
+    </div>
+
+    <p class="mt-8 text-sm text-bp-muted">
+      Predicted by <span class="text-bp-text font-medium">{{ log.model_name }}</span>{% if model_r2 %}, R-squared {{ model_r2 }}{% endif %}
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {% include "components/stat_card.html" with label="Price per Sqft" value=log.price_per_sqft trend="flat" sub="based on submitted area" %}
+
+    <div class="bp-card bp-tick p-5">
+      <p class="bp-label mb-3">Confidence Score</p>
+      <div class="flex items-center gap-4">
+        <div class="relative w-16 h-16 rounded-full" style="background: conic-gradient(var(--bp-accent) {{ log.confidence_score }}%, var(--bp-line) 0);">
+          <div class="absolute inset-1.5 rounded-full bg-bp-surface flex items-center justify-center">
+            <span class="bp-metric text-sm">{{ log.confidence_score|floatformat:0 }}</span>
+          </div>
+        </div>
+        <p class="text-xs text-bp-muted">Blends model fit quality with local listing volume.</p>
+      </div>
+    </div>
+
+    {% include "components/stat_card.html" with label="Comparable Listings" value=comparable_count sub="same location and BHK, +/-15% area" trend="flat" %}
+  </div>
+
+  <div class="bp-card p-6">
+    <p class="bp-label mb-4">Comparable Properties</p>
+    {% if comparables %}
+      <div class="overflow-x-auto">
+        <table class="bp-table">
+          <thead>
+            <tr>
+              <th>Location</th>
+              <th>BHK</th>
+              <th>Area (sqft)</th>
+              <th>Price</th>
+              <th>Price/Sqft</th>
+              <th>Furnishing</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for prop in comparables %}
+              <tr>
+                <td>{{ prop.location.name }}</td>
+                <td>{{ prop.bhk }}</td>
+                <td class="bp-metric">{{ prop.area_sqft|floatformat:0 }}</td>
+                <td class="bp-metric">{{ prop.price_inr|inr_short }}</td>
+                <td class="bp-metric">{{ prop.price_per_sqft|inr }}</td>
+                <td>{{ prop.furnishing }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-sm text-bp-muted">No close comparables found in the dataset for this configuration.</p>
+    {% endif %}
+  </div>
+
+  <a href="{% url 'predictor:predict' %}" class="bp-btn-ghost inline-flex">Predict Another Property</a>
+</div>
+{% endblock %}

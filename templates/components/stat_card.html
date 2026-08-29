@@ -1,0 +1,16 @@
+{% comment %}
+Usage: {% include "components/stat_card.html" with label="Listings" value="12,450" sub="dataset rows" trend="up" %}
+trend: "up" | "down" | "flat"
+{% endcomment %}
+<div class="bp-card bp-tick p-5">
+  <p class="bp-label mb-3">{{ label }}</p>
+  <p class="bp-metric text-3xl font-semibold leading-none">{{ value }}</p>
+  <div class="flex items-center gap-1.5 mt-3">
+    {% if trend == "up" %}
+      <span class="bp-up text-xs font-mono">&#9650;</span>
+    {% elif trend == "down" %}
+      <span class="bp-down text-xs font-mono">&#9660;</span>
+    {% endif %}
+    <p class="text-xs text-bp-muted">{{ sub }}</p>
+  </div>
+</div>

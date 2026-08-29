@@ -1,0 +1,22 @@
+[Unit]
+Description=EstateIQ Gunicorn Application Server
+After=network.target
+
+[Service]
+User=estateiq
+Group=www-data
+WorkingDirectory=/home/estateiq/EstateIQ
+Environment=DJANGO_SETTINGS_MODULE=estateiq.settings.prod
+EnvironmentFile=/home/estateiq/EstateIQ/.env
+ExecStart=/home/estateiq/EstateIQ/venv/bin/gunicorn --config /home/estateiq/EstateIQ/deploy/gunicorn.conf.py estateiq.wsgi:application
+Restart=on-failure
+RestartSec=5
+
+# Hardening. SQLite still needs the working directory writable for db.sqlite3 and its
+# -wal/-shm files, so ProtectSystem is "full" rather than "strict".
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

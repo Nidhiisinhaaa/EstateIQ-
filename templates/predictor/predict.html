@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Predict Price — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+{% include "components/page_header.html" with eyebrow="Prediction Engine" title="Estimate a Property's Price" description="Fill in the specification and the deployed model will return a price estimate with a confidence range." %}
+
+<div class="max-w-7xl mx-auto px-6 pb-24">
+
+  {% if messages %}
+    <div class="mb-6 space-y-2">
+      {% for message in messages %}
+        <div class="bp-card border-bp-down p-4 text-sm text-bp-text">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if not artifacts_ready %}
+    <div class="bp-card p-6 mb-8 border-l-2 border-bp-down">
+      <p class="bp-label mb-2">Setup Required</p>
+      <p class="text-bp-text">
+        Model artifacts have not been generated yet. Run
+        <code class="bp-metric text-bp-accent">python ml_pipeline/run_pipeline.py --step all</code>
+        to train and export a model before predictions can be served.
+      </p>
+    </div>
+  {% endif %}
+
+  <form method="post" id="predict-form" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    {% csrf_token %}
+
+    <div class="lg:col-span-2 space-y-8">
+
+      <fieldset class="bp-card bp-tick p-6">
+        <legend class="bp-label px-1">Location and Size</legend>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-3">
+          <div class="sm:col-span-2">
+            <label class="bp-label block mb-2" for="{{ form.location.id_for_label }}">{{ form.location.label }}</label>
+            {{ form.location }}
+            {% for error in form.location.errors %}<p class="text-bp-down text-xs mt-1">{{ error }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="bp-label block mb-2" for="{{ form.area_sqft.id_for_label }}">Area (sqft)</label>
+            {{ form.area_sqft }}
+            {% for error in form.area_sqft.errors %}<p class="text-bp-down text-xs mt-1">{{ error }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="bp-label block mb-2" for="{{ form.bhk.id_for_label }}">BHK</label>
+            {{ form.bhk }}
+            {% for error in form.bhk.errors %}<p class="text-bp-down text-xs mt-1">{{ error }}</p>{% endfor %}
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="bp-card bp-tick p-6">
+        <legend class="bp-label px-1">Configuration</legend>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-3">
+          <div>
+            <label class="bp-label block mb-2" for="{{ form.bathrooms.id_for_label }}">Bathrooms</label>
+            {{ form.bathrooms }}
+          </div>
+          <div>
+            <label class="bp-label block mb-2" for="{{ form.balcony.id_for_label }}">Balconies</label>
+            {{ form.balcony }}
+          </div>
+          <div>
+            <label class="bp-label block mb-2" for="{{ form.floor.id_for_label }}">Floor</label>
+            {{ form.floor }}
+          </div>
+          <div>
+            <label class="bp-label block mb-2" for="{{ form.total_floors.id_for_label }}">Total Floors</label>
+            {{ form.total_floors }}
+            {% for error in form.floor.errors %}<p class="text-bp-down text-xs mt-1">{{ error }}</p>{% endfor %}
+          </div>
+          <div>
+            <label class="bp-label block mb-2" for="{{ form.age_years.id_for_label }}">Age (years)</label>
+            {{ form.age_years }}
+          </div>
+          <div>
+            <label class="bp-label block mb-2" for="{{ form.property_type.id_for_label }}">Property Type</label>
+            {{ form.property_type }}
+          </div>
+          <div>
+            <label class="bp-label block mb-2" for="{{ form.furnishing.id_for_label }}">Furnishing</label>
+            {{ form.furnishing }}
+          </div>
+          <div class="flex items-center gap-2 pt-6">
+            {{ form.parking }}
+            <label class="text-sm text-bp-text" for="{{ form.parking.id_for_label }}">Parking available</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="bp-card bp-tick p-6">
+        <legend class="bp-label px-1">Features and Amenities</legend>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">
+          {% for checkbox in form.amenities %}
+            <label class="flex items-center gap-2 text-sm text-bp-muted">
+              {{ checkbox.tag }}
+              <span>{{ checkbox.choice_label }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </fieldset>
+
+      <button type="submit" class="bp-btn w-full sm:w-auto">Generate Estimate</button>
+    </div>
+
+    <div class="lg:col-span-1">
+      <div class="sticky top-24 bp-card bp-tick p-6">
+        <p class="bp-label mb-4">Specification Sheet</p>
+        <dl class="space-y-3 text-sm">
+          <div class="flex justify-between border-b border-bp-line pb-2">
+            <dt class="text-bp-muted">Location</dt>
+            <dd class="bp-metric" data-spec="location">—</dd>
+          </div>
+          <div class="flex justify-between border-b border-bp-line pb-2">
+            <dt class="text-bp-muted">Area</dt>
+            <dd class="bp-metric" data-spec="area_sqft">—</dd>
+          </div>
+          <div class="flex justify-between border-b border-bp-line pb-2">
+            <dt class="text-bp-muted">Configuration</dt>
+            <dd class="bp-metric" data-spec="bhk">—</dd>
+          </div>
+          <div class="flex justify-between border-b border-bp-line pb-2">
+            <dt class="text-bp-muted">Bathrooms</dt>
+            <dd class="bp-metric" data-spec="bathrooms">—</dd>
+          </div>
+          <div class="flex justify-between border-b border-bp-line pb-2">
+            <dt class="text-bp-muted">Floor</dt>
+            <dd class="bp-metric" data-spec="floor">—</dd>
+          </div>
+          <div class="flex justify-between border-b border-bp-line pb-2">
+            <dt class="text-bp-muted">Type</dt>
+            <dd class="bp-metric" data-spec="property_type">—</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-bp-muted">Furnishing</dt>
+            <dd class="bp-metric" data-spec="furnishing">—</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/predict.js' %}"></script>
+{% endblock %}

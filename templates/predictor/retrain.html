@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Retrain Control — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+{% include "components/page_header.html" with eyebrow="Staff Only" title="Retrain Control" description="Runs the full ML pipeline (clean, EDA, features, train) as a background job and syncs the new metrics on success." %}
+
+<div class="max-w-3xl mx-auto px-6 pb-24 space-y-8">
+
+  {% if messages %}
+    <div class="space-y-2">
+      {% for message in messages %}
+        <div class="bp-card border-bp-down p-4 text-sm">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="post" class="bp-card p-6">
+    {% csrf_token %}
+    <p class="bp-label mb-3">Trigger a Retrain</p>
+    <p class="text-sm text-bp-muted mb-4">
+      Runs <span class="bp-metric">python ml_pipeline/run_pipeline.py --step all</span> in the background.
+      Only one job may run at a time.
+    </p>
+    <button type="submit" class="bp-btn" id="retrain-submit" {% if job.status == "queued" or job.status == "running" %}disabled{% endif %}>
+      Start Retrain
+    </button>
+  </form>
+
+  {% if job %}
+    <div class="bp-card p-6" id="job-status" data-job-id="{{ job.pk }}" data-status="{{ job.status }}">
+      <div class="flex items-center justify-between mb-3">
+        <p class="bp-label">Job #{{ job.pk }}</p>
+        <span class="bp-metric text-sm" data-field="status">{{ job.get_status_display }}</span>
+      </div>
+      <div class="grid grid-cols-2 gap-4 text-xs text-bp-muted mb-4">
+        <div>Started: <span class="bp-metric" data-field="started_at">{{ job.started_at|default:"--" }}</span></div>
+        <div>Finished: <span class="bp-metric" data-field="finished_at">{{ job.finished_at|default:"--" }}</span></div>
+      </div>
+      <p class="bp-label mb-2">Log Tail</p>
+      <pre class="bp-metric text-xs bg-bp-surface2 border border-bp-line p-4 overflow-x-auto max-h-96 overflow-y-auto whitespace-pre-wrap" data-field="log_tail">{{ job.log_tail }}</pre>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  window.ESTATEIQ_RETRAIN_JOB_ID = {{ job.pk|default:"null" }};
+  window.ESTATEIQ_RETRAIN_STATUS_URL_BASE = "/predictor/retrain/";
+</script>
+<script src="{% static 'js/retrain.js' %}"></script>
+{% endblock %}

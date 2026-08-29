@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ SITE_NAME }} — {{ SITE_TAGLINE }}{% endblock %}</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bp: {
+            base: "#111111",
+            surface: "#1C1C1C",
+            surface2: "#262626",
+            line: "#333333",
+            grid: "rgba(212,175,55,0.08)",
+            accent: "#D4AF37",
+            accentSoft: "#B8860B",
+            highlight: "#FACC15",
+            up: "#34D399",
+            down: "#F87171",
+            text: "#F5F5F5",
+            muted: "#A3A3A3",
+          },
+        },
+        fontFamily: {
+          heading: ["Space Grotesk", "sans-serif"],
+          body: ["Inter", "sans-serif"],
+          mono: ["JetBrains Mono", "monospace"],
+        },
+        borderRadius: {
+          none: "0px",
+          sm: "2px",
+          DEFAULT: "4px",
+          md: "6px",
+        },
+      },
+    },
+  };
+</script>
+
+<link rel="stylesheet" href="{% static 'css/blueprint-slate.css' %}">
+{% block extra_head %}{% endblock %}
+</head>
+<body class="bp-grid-bg min-h-screen flex flex-col font-body text-bp-text">
+
+{% include "components/navbar.html" %}
+
+<main class="flex-1">
+  {% block content %}{% endblock %}
+</main>
+
+{% include "components/footer.html" %}
+
+<script src="{% static 'js/app.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

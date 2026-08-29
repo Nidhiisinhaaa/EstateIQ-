@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+db.sqlite3
+staticfiles/
+media/
+.venv/
+venv/
+ml_pipeline/data/raw/*.csv
+!ml_pipeline/data/raw/.gitkeep
+*.log
+.DS_Store
+.pytest_cache/

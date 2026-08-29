@@ -1,0 +1,262 @@
+{
+  "counts": {
+    "total_rows": 7500,
+    "unique_locations": 142
+  },
+  "price_lakhs": {
+    "median": 86.48,
+    "mean": 99.77,
+    "std": 57.91
+  },
+  "price_per_sqft": {
+    "median": 6208.02,
+    "mean": 6688.31,
+    "std": 2384.75,
+    "cut_lower": 4303.56,
+    "cut_upper": 9073.07
+  },
+  "top_locations_by_count": [
+    {
+      "location": "Sarjapur Road",
+      "count": 278
+    },
+    {
+      "location": "Electronic City",
+      "count": 276
+    },
+    {
+      "location": "Whitefield",
+      "count": 252
+    },
+    {
+      "location": "Btm Layout",
+      "count": 252
+    },
+    {
+      "location": "Marathahalli",
+      "count": 228
+    },
+    {
+      "location": "Varthur",
+      "count": 225
+    },
+    {
+      "location": "Kr Puram",
+      "count": 219
+    },
+    {
+      "location": "Bellandur",
+      "count": 217
+    },
+    {
+      "location": "Jp Nagar",
+      "count": 207
+    },
+    {
+      "location": "Yelahanka",
+      "count": 204
+    },
+    {
+      "location": "Koramangala",
+      "count": 187
+    },
+    {
+      "location": "Indiranagar",
+      "count": 186
+    },
+    {
+      "location": "Banashankari",
+      "count": 182
+    },
+    {
+      "location": "Kanakapura Road",
+      "count": 178
+    },
+    {
+      "location": "Hennur",
+      "count": 176
+    }
+  ],
+  "top_locations_by_median_ppsf": [
+    {
+      "location": "Koramangala",
+      "median_price_per_sqft": 12438.27
+    },
+    {
+      "location": "Indiranagar",
+      "median_price_per_sqft": 11590.62
+    },
+    {
+      "location": "Horamavu Block",
+      "median_price_per_sqft": 11074.82
+    },
+    {
+      "location": "Horamavu Stage 2",
+      "median_price_per_sqft": 10723.82
+    },
+    {
+      "location": "Domlur",
+      "median_price_per_sqft": 10430.09
+    },
+    {
+      "location": "Chandapura Stage 2",
+      "median_price_per_sqft": 10250.82
+    },
+    {
+      "location": "Nagarbhavi Gardens",
+      "median_price_per_sqft": 10244.79
+    },
+    {
+      "location": "Talaghattapura Stage 2",
+      "median_price_per_sqft": 10215.54
+    },
+    {
+      "location": "Chandapura Extension",
+      "median_price_per_sqft": 10188.2
+    },
+    {
+      "location": "Malleshwaram",
+      "median_price_per_sqft": 10103.15
+    },
+    {
+      "location": "Doddakannelli Enclave",
+      "median_price_per_sqft": 10058.06
+    },
+    {
+      "location": "Harlur Colony",
+      "median_price_per_sqft": 10000.0
+    },
+    {
+      "location": "Haralur Road Block",
+      "median_price_per_sqft": 9983.94
+    },
+    {
+      "location": "Vasanthapura Phase 1",
+      "median_price_per_sqft": 9963.88
+    },
+    {
+      "location": "Vidyaranyapura Phase 2",
+      "median_price_per_sqft": 9939.39
+    }
+  ],
+  "bottom_locations_by_median_ppsf": [
+    {
+      "location": "Gunjur Gardens",
+      "median_price_per_sqft": 3364.83
+    },
+    {
+      "location": "Attibele Cross",
+      "median_price_per_sqft": 3470.73
+    },
+    {
+      "location": "Sarjapur Enclave",
+      "median_price_per_sqft": 3531.68
+    },
+    {
+      "location": "Thanisandra Phase 1",
+      "median_price_per_sqft": 3576.29
+    },
+    {
+      "location": "Dodballapur Road Phase 1",
+      "median_price_per_sqft": 3603.18
+    },
+    {
+      "location": "Munnekollal Phase 2",
+      "median_price_per_sqft": 3630.66
+    },
+    {
+      "location": "Nagavara Enclave",
+      "median_price_per_sqft": 3654.86
+    },
+    {
+      "location": "Ramamurthy Nagar Extension",
+      "median_price_per_sqft": 3659.42
+    },
+    {
+      "location": "Sompura Colony",
+      "median_price_per_sqft": 3702.89
+    },
+    {
+      "location": "Nagavara Main Road",
+      "median_price_per_sqft": 3822.68
+    },
+    {
+      "location": "Kaggadasapura Layout",
+      "median_price_per_sqft": 3857.44
+    },
+    {
+      "location": "Nallurhalli Nagar",
+      "median_price_per_sqft": 3888.48
+    },
+    {
+      "location": "Kengeri",
+      "median_price_per_sqft": 3975.0
+    },
+    {
+      "location": "Thanisandra Phase 2",
+      "median_price_per_sqft": 3991.2
+    },
+    {
+      "location": "Yelenahalli Township",
+      "median_price_per_sqft": 4017.29
+    }
+  ],
+  "bhk_price_median_lakhs": {
+    "1": 36.36,
+    "2": 69.58,
+    "3": 106.12,
+    "4": 143.74,
+    "5": 189.6,
+    "6": 207.21
+  },
+  "correlation_matrix": {
+    "total_sqft": {
+      "total_sqft": 1.0,
+      "bath": 0.793,
+      "balcony": 0.033,
+      "bhk": 0.932,
+      "price_per_sqft": -0.011,
+      "price_inr": 0.74
+    },
+    "bath": {
+      "total_sqft": 0.793,
+      "bath": 1.0,
+      "balcony": 0.025,
+      "bhk": 0.854,
+      "price_per_sqft": -0.007,
+      "price_inr": 0.588
+    },
+    "balcony": {
+      "total_sqft": 0.033,
+      "bath": 0.025,
+      "balcony": 1.0,
+      "bhk": 0.034,
+      "price_per_sqft": -0.002,
+      "price_inr": 0.024
+    },
+    "bhk": {
+      "total_sqft": 0.932,
+      "bath": 0.854,
+      "balcony": 0.034,
+      "bhk": 1.0,
+      "price_per_sqft": -0.006,
+      "price_inr": 0.697
+    },
+    "price_per_sqft": {
+      "total_sqft": -0.011,
+      "bath": -0.007,
+      "balcony": -0.002,
+      "bhk": -0.006,
+      "price_per_sqft": 1.0,
+      "price_inr": 0.607
+    },
+    "price_inr": {
+      "total_sqft": 0.74,
+      "bath": 0.588,
+      "balcony": 0.024,
+      "bhk": 0.697,
+      "price_per_sqft": 0.607,
+      "price_inr": 1.0
+    }
+  }
+}

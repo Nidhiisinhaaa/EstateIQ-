@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load static currency_tags %}
+
+{% block title %}Prediction History — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+{% include "components/page_header.html" with eyebrow="Account" title="Prediction History" description="Every estimate you've generated, filterable and exportable." %}
+
+<div class="max-w-7xl mx-auto px-6 pb-24 space-y-6">
+
+  {% if messages %}
+    <div class="space-y-2">
+      {% for message in messages %}
+        <div class="bp-card p-4 text-sm">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <form method="get" class="flex flex-wrap items-end gap-3">
+      <div>
+        <label class="bp-label block mb-2">Location</label>
+        <select name="location" class="bp-input">
+          <option value="">All</option>
+          {% for loc in locations %}
+            <option value="{{ loc }}" {% if loc == location_filter %}selected{% endif %}>{{ loc }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="bp-label block mb-2">From</label>
+        <input type="date" name="date_from" value="{{ date_from }}" class="bp-input">
+      </div>
+      <div>
+        <label class="bp-label block mb-2">To</label>
+        <input type="date" name="date_to" value="{{ date_to }}" class="bp-input">
+      </div>
+      <button type="submit" class="bp-btn-ghost">Filter</button>
+    </form>
+
+    <div class="flex gap-3">
+      <a href="{% url 'account:export_history_csv' %}" class="bp-btn-ghost">Export CSV</a>
+      <a href="{% url 'account:history_clear' %}" class="bp-btn-ghost">Clear All</a>
+    </div>
+  </div>
+
+  <form method="get" action="{% url 'account:compare' %}" id="compare-form">
+    <div class="bp-card p-0 overflow-x-auto">
+      <table class="bp-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Configuration</th>
+            <th>Predicted Price</th>
+            <th>Model</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in page %}
+            <tr class="cursor-pointer" data-toggle="detail-{{ log.pk }}">
+              <td onclick="event.stopPropagation()">
+                <input type="checkbox" name="id" value="{{ log.pk }}" class="compare-checkbox">
+              </td>
+              <td>{{ log.created_at|date:"Y-m-d H:i" }}</td>
+              <td>{{ log.location_name }}</td>
+              <td>{{ log.bhk }} BHK, {{ log.area_sqft|floatformat:0 }} sqft</td>
+              <td class="bp-metric">{{ log.predicted_price|inr_short }}</td>
+              <td>{{ log.model_name }}</td>
+              <td onclick="event.stopPropagation()">
+                <div class="flex gap-2 text-xs">
+                  <a href="{% url 'predictor:result' log.pk %}" class="text-bp-accent">View</a>
+                  <a href="{% url 'account:export_prediction_pdf' log.pk %}" class="text-bp-accent">PDF</a>
+                  <form method="post" action="{% url 'account:history_delete' log.pk %}" onsubmit="return confirm('Delete this prediction?');">
+                    {% csrf_token %}
+                    <button type="submit" class="text-bp-down">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            <tr id="detail-{{ log.pk }}" class="hidden">
+              <td colspan="7" class="bg-bp-surface2">
+                <div class="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                  <div><span class="text-bp-muted">Bathrooms</span><br><span class="bp-metric">{{ log.bathrooms }}</span></div>
+                  <div><span class="text-bp-muted">Balcony</span><br><span class="bp-metric">{{ log.balcony }}</span></div>
+                  <div><span class="text-bp-muted">Furnishing</span><br><span class="bp-metric">{{ log.furnishing }}</span></div>
+                  <div><span class="text-bp-muted">Property Type</span><br><span class="bp-metric">{{ log.property_type }}</span></div>
+                  <div><span class="text-bp-muted">Range</span><br><span class="bp-metric">{{ log.lower_bound|inr_short }} - {{ log.upper_bound|inr_short }}</span></div>
+                  <div><span class="text-bp-muted">Confidence</span><br><span class="bp-metric">{{ log.confidence_score }}</span></div>
+                  <div><span class="text-bp-muted">Amenities</span><br><span class="bp-metric">{{ log.amenities|join:", "|default:"None" }}</span></div>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="7" class="text-sm text-bp-muted">No predictions yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex items-center justify-between mt-4">
+      <p class="text-xs text-bp-muted">Select up to {{ max_compare_items }} rows to compare.</p>
+      <button type="submit" class="bp-btn-ghost">Compare Selected</button>
+    </div>
+  </form>
+
+  {% if page.paginator.num_pages > 1 %}
+    <div class="flex gap-3 text-sm">
+      {% if page.has_previous %}
+        <a href="?page={{ page.previous_page_number }}" class="text-bp-accent">Previous</a>
+      {% endif %}
+      <span class="text-bp-muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+      {% if page.has_next %}
+        <a href="?page={{ page.next_page_number }}" class="text-bp-accent">Next</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/history.js' %}"></script>
+{% endblock %}

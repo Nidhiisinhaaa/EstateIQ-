@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Analytics Dashboard — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+{% include "components/page_header.html" with eyebrow="Analytics" title="Price Intelligence Dashboard" description="Aggregate views over the full listings dataset, computed server-side and cached." %}
+
+<div class="max-w-7xl mx-auto px-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
+    {% include "components/stat_card.html" with label="Total Listings" value=stats.total_listings trend="flat" sub="dataset rows" %}
+    {% include "components/stat_card.html" with label="Locations Covered" value=stats.locations_covered trend="flat" sub="unique localities" %}
+    {% include "components/stat_card.html" with label="Median Price" value=stats.median_price|floatformat:0 trend="flat" sub="INR" %}
+    {% include "components/stat_card.html" with label="Median Price/Sqft" value=stats.median_price_per_sqft|floatformat:0 trend="flat" sub="INR" %}
+    {% include "components/stat_card.html" with label="Predictions Served" value=stats.predictions_served trend="up" sub="all time" %}
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-6 pb-24">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {% for card in cards %}
+      <div class="bp-card bp-tick p-5" data-chart-card data-slug="{{ card.slug }}" data-type="{{ card.type }}">
+        <p class="bp-label mb-3">{{ card.title }}</p>
+        <div class="relative h-64">
+          <div class="bp-skeleton absolute inset-0 flex items-center justify-center text-xs text-bp-muted" data-skeleton>
+            Loading...
+          </div>
+          <canvas data-canvas class="hidden"></canvas>
+        </div>
+        {% if card.insight %}
+          <p class="text-xs text-bp-muted mt-3">{{ card.insight }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="{% static 'js/charts.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

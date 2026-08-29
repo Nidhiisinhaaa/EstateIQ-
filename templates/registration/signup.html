@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto px-6 py-20">
+  <p class="bp-label mb-3">Account</p>
+  <h1 class="font-heading text-3xl font-semibold mb-8">Create an Account</h1>
+
+  <form method="post" class="bp-card bp-tick p-6 space-y-5">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label class="bp-label block mb-2" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for error in field.errors %}<p class="text-bp-down text-xs mt-1">{{ error }}</p>{% endfor %}
+        {% if field.help_text %}<p class="text-xs text-bp-muted mt-1">{{ field.help_text }}</p>{% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="bp-btn w-full">Sign Up</button>
+  </form>
+
+  <p class="text-sm text-bp-muted mt-6">
+    Already have an account? <a href="{% url 'account:login' %}" class="text-bp-accent">Log in</a>
+  </p>
+</div>
+{% endblock %}

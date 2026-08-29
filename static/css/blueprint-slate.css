@@ -1,0 +1,302 @@
+/*
+  Charcoal + Gold -- Luxury Real Estate design system for EstateIQ.
+  All colour usage in this project must trace back to the variables declared here.
+  (File kept at its original path/name so every template's static reference stays valid;
+  class names below keep their original "bp-" prefix for the same reason.)
+*/
+
+:root {
+  --bp-base: #111111;
+  --bp-surface: #1C1C1C;
+  --bp-surface-2: #262626;
+  --bp-line: #333333;
+
+  --bp-accent: #D4AF37;        /* Primary */
+  --bp-accent-rgb: 212, 175, 55;
+  --bp-accent-soft: #B8860B;   /* Button */
+  --bp-highlight: #FACC15;     /* Accent */
+  --bp-highlight-rgb: 250, 204, 21;
+
+  --bp-grid: rgba(212, 175, 55, 0.08);
+
+  --bp-up: #34D399;
+  --bp-down: #F87171;
+  --bp-text: #F5F5F5;
+  --bp-muted: #A3A3A3;
+
+  --bp-font-heading: "Space Grotesk", sans-serif;
+  --bp-font-body: "Inter", sans-serif;
+  --bp-font-mono: "JetBrains Mono", monospace;
+}
+
+html, body {
+  background-color: var(--bp-base);
+  color: var(--bp-text);
+  font-family: var(--bp-font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--bp-font-heading);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Ambient background glow (replaces the old drafting-grid motif)         */
+/* ---------------------------------------------------------------------- */
+
+.bp-grid-bg {
+  background-color: var(--bp-base);
+  background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(var(--bp-accent-rgb), 0.12), transparent 60%);
+  background-repeat: no-repeat;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Cards and hairlines                                                    */
+/* ---------------------------------------------------------------------- */
+
+.bp-card {
+  background-color: var(--bp-surface);
+  border: 1px solid var(--bp-line);
+  border-radius: 4px;
+  position: relative;
+}
+
+.bp-hairline {
+  border-color: var(--bp-line) !important;
+}
+
+/* 8px corner tick-marks, now a gold flourish rather than a drafting motif */
+.bp-tick {
+  position: relative;
+}
+
+.bp-tick::before,
+.bp-tick::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+}
+
+.bp-tick::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid var(--bp-accent);
+  border-left: 1px solid var(--bp-accent);
+}
+
+.bp-tick::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid var(--bp-accent);
+  border-right: 1px solid var(--bp-accent);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Labels and metrics                                                     */
+/* ---------------------------------------------------------------------- */
+
+.bp-label {
+  font-family: var(--bp-font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bp-muted);
+}
+
+.bp-metric {
+  font-family: var(--bp-font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--bp-text);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Hero badge (Phase: UI refresh)                                         */
+/* ---------------------------------------------------------------------- */
+
+.bp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid rgba(var(--bp-accent-rgb), 0.4);
+  background-color: rgba(var(--bp-accent-rgb), 0.08);
+  color: var(--bp-accent);
+  font-family: var(--bp-font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 999px;
+}
+
+.bp-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background-color: var(--bp-highlight);
+  box-shadow: 0 0 6px rgba(var(--bp-highlight-rgb), 0.8);
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Buttons                                                                */
+/* ---------------------------------------------------------------------- */
+
+.bp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  background-color: var(--bp-accent-soft);
+  color: var(--bp-base);
+  font-family: var(--bp-font-body);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--bp-accent-soft);
+  border-radius: 2px;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+  cursor: pointer;
+}
+
+.bp-btn:hover {
+  background-color: var(--bp-accent);
+  border-color: var(--bp-accent);
+  color: var(--bp-base);
+}
+
+.bp-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  background-color: transparent;
+  color: var(--bp-text);
+  font-family: var(--bp-font-body);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--bp-line);
+  border-radius: 2px;
+  transition: border-color 120ms ease, color 120ms ease;
+  cursor: pointer;
+}
+
+.bp-btn-ghost:hover {
+  border-color: var(--bp-accent);
+  color: var(--bp-accent);
+}
+
+.bp-btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  background-color: var(--bp-down);
+  color: var(--bp-base);
+  font-family: var(--bp-font-body);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--bp-down);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Inputs                                                                 */
+/* ---------------------------------------------------------------------- */
+
+.bp-input {
+  width: 100%;
+  background-color: var(--bp-surface-2);
+  color: var(--bp-text);
+  font-family: var(--bp-font-body);
+  font-size: 0.875rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--bp-line);
+  border-radius: 2px;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.bp-input:focus {
+  border-color: var(--bp-accent);
+  box-shadow: 0 0 0 3px rgba(var(--bp-accent-rgb), 0.25);
+}
+
+.bp-input::placeholder {
+  color: var(--bp-muted);
+}
+
+select.bp-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23A3A3A3'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1.1rem;
+  padding-right: 2.25rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Tables                                                                 */
+/* ---------------------------------------------------------------------- */
+
+.bp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.bp-table th {
+  background-color: var(--bp-surface-2);
+  color: var(--bp-muted);
+  font-family: var(--bp-font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--bp-line);
+}
+
+.bp-table td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--bp-line);
+  color: var(--bp-text);
+}
+
+.bp-table tr:hover td {
+  background-color: var(--bp-surface-2);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Utility text colours                                                   */
+/* ---------------------------------------------------------------------- */
+
+.bp-up { color: var(--bp-up); }
+.bp-down { color: var(--bp-down); }
+.bp-muted { color: var(--bp-muted); }
+.bp-accent { color: var(--bp-accent); }
+.bp-highlight { color: var(--bp-highlight); }
+
+/* ---------------------------------------------------------------------- */
+/* Skeleton loading state (Phase 6 analytics chart cards)                 */
+/* ---------------------------------------------------------------------- */
+
+@keyframes bp-skeleton-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+
+.bp-skeleton {
+  background-color: var(--bp-surface-2);
+  border: 1px solid var(--bp-line);
+  animation: bp-skeleton-pulse 1.6s ease-in-out infinite;
+}
